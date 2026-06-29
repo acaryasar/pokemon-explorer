@@ -77,7 +77,7 @@ function AuthModal() {
             className="w-full"
             disabled={loading}
           >
-            {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
+            {isLogin ? '🔑 Giriş Yap' : '📝 Kayıt Ol'}
           </Button>
 
           <div className="text-center">

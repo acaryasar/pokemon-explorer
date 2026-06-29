@@ -49,31 +49,32 @@ function Header() {
             onClick={() => setShowOnlinePlayers(!showOnlinePlayers)}
             className="text-white hover:text-blue-400 transition-colors flex items-center gap-2 cursor-pointer"
           >
-            <span>👥</span> Çevrimiçi ({players.length})
+            <span>👥</span> <span className="text-sm">({players.length})</span>
           </button>
           <nav className="flex gap-4">
-            <Link to="/game" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
-              <span>🎮</span> Oyun
+            <Link to="/game" className="text-white hover:text-blue-400 transition-colors text-2xl" title="Oyun">
+              🎮
             </Link>
-            <Link to="/pokedex" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
-              <span>📖</span> Pokedex
+            <Link to="/pokedex" className="text-white hover:text-blue-400 transition-colors text-2xl" title="Pokedex">
+              📖
             </Link>
-            <Link to="/bag" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
-              <span>🎒</span> Çanta
+            <Link to="/bag" className="text-white hover:text-blue-400 transition-colors text-2xl" title="Çanta">
+              🎒
             </Link>
-            <Link to="/friends" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
-              <span>👥</span> Arkadaşlar
+            <Link to="/friends" className="text-white hover:text-blue-400 transition-colors text-2xl" title="Arkadaşlar">
+              👥
             </Link>
-            <Link to="/settings" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
-              <span>⚙️</span> Ayarlar
+            <Link to="/settings" className="text-white hover:text-blue-400 transition-colors text-2xl" title="Ayarlar">
+              ⚙️
             </Link>
           </nav>
           {user && (
             <button
               onClick={signOut}
-              className="text-white hover:text-red-400 transition-colors text-sm"
+              className="text-white hover:text-red-400 transition-colors text-2xl"
+              title="Çıkış Yap"
             >
-              Çıkış Yap
+              🚪
             </button>
           )}
         </div>
