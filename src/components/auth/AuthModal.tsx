@@ -1,8 +1,10 @@
 import { useAuthStore } from '../../store/authStore'
 import Button from '../ui/Button'
+import { useState } from 'react'
 
 function AuthModal() {
   const { signInWithGoogle, signInAnonymously, loading } = useAuthStore()
+  const [username, setUsername] = useState('')
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
@@ -18,6 +20,13 @@ function AuthModal() {
         </div>
 
         <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+          />
           <Button
             onClick={signInWithGoogle}
             variant="primary"
@@ -56,7 +65,13 @@ function AuthModal() {
           </div>
 
           <Button
-            onClick={signInAnonymously}
+            onClick={() => {
+              if (!username.trim()) {
+                alert('Please enter a username')
+                return
+              }
+              signInAnonymously()
+            }}
             variant="secondary"
             size="lg"
             className="w-full"

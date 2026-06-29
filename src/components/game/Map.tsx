@@ -4,7 +4,7 @@ import Player from './Player'
 function Map() {
   const { playerPosition } = useGameStore()
 
-  const gridSize = 10
+  const gridSize = 20
   const tiles = []
 
   for (let y = 0; y < gridSize; y++) {
@@ -30,7 +30,7 @@ function Map() {
         className="grid gap-1"
         style={{
           gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
-          maxWidth: '500px',
+          maxWidth: '600px',
         }}
       >
         {tiles}

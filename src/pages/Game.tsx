@@ -1,6 +1,7 @@
 import Header from '../components/layout/Header'
 import Map from '../components/game/Map'
 import PokemonEncounter from '../components/game/PokemonEncounter'
+import MobileControls from '../components/game/MobileControls'
 import { useMovement } from '../hooks/useMovement'
 import { useAuthStore } from '../store/authStore'
 import { useNavigate } from 'react-router-dom'
@@ -31,6 +32,7 @@ function Game() {
         </div>
         <PokemonEncounter />
       </div>
+      <MobileControls />
     </div>
   )
 }
