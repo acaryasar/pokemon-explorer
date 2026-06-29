@@ -2,6 +2,7 @@ import Map from '../components/game/Map'
 import PokemonEncounter from '../components/game/PokemonEncounter'
 import MobileControls from '../components/game/MobileControls'
 import OnlinePlayers from '../components/game/OnlinePlayers'
+import Header from '../components/layout/Header'
 import { useMovement } from '../hooks/useMovement'
 import { useAudio } from '../hooks/useAudio'
 import { useAuthStore } from '../store/authStore'
@@ -38,6 +39,7 @@ function Game() {
 
   return (
     <div className="min-h-screen bg-gray-900">
+      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold text-white">Oyun</h1>
