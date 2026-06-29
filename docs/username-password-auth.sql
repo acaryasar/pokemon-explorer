@@ -5,9 +5,6 @@
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS handle_new_user();
 
--- Update profiles table to support username
-ALTER TABLE profiles ALTER COLUMN username SET NOT NULL;
-
 -- Create a custom users table for username/password
 CREATE TABLE IF NOT EXISTS app_users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

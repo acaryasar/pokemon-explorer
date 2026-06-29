@@ -1,4 +1,3 @@
-import Header from '../components/layout/Header'
 import Map from '../components/game/Map'
 import PokemonEncounter from '../components/game/PokemonEncounter'
 import MobileControls from '../components/game/MobileControls'
@@ -26,6 +25,17 @@ function Game() {
   useEffect(() => {
     if (user) {
       loadPokemon()
+      // Request fullscreen on user login
+      const requestFullscreen = async () => {
+        try {
+          if (document.documentElement.requestFullscreen) {
+            await document.documentElement.requestFullscreen()
+          }
+        } catch (error) {
+          console.log('Fullscreen request failed:', error)
+        }
+      }
+      requestFullscreen()
     }
   }, [user, loadPokemon])
 
@@ -39,15 +49,16 @@ function Game() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-4">Oyun</h1>
-        <button
-          onClick={handleMusicToggle}
-          className="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-        >
-          {isPlaying ? '🔊 Müzik Durdur' : '🔇 Müzik Başlat'}
-        </button>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold text-white">Oyun</h1>
+          <button
+            onClick={handleMusicToggle}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            {isPlaying ? '🔊' : '🔇'}
+          </button>
+        </div>
         <div className="flex justify-center">
           <Map />
         </div>

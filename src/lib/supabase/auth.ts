@@ -16,6 +16,9 @@ export async function signUpWithUsername(username: string, password: string): Pr
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {}
+    }
   })
 
   return { data: data.user, error }

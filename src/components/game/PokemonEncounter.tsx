@@ -82,10 +82,10 @@ function PokemonEncounter() {
               disabled={pokeballs === 0}
               className="flex-1"
             >
-              Catch ({pokeballs} left)
+              Yakala ({pokeballs} kaldı)
             </Button>
             <Button onClick={runAway} variant="secondary" className="flex-1">
-              Run
+              Kaç
             </Button>
           </div>
         </div>
