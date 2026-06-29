@@ -30,15 +30,15 @@ function PokemonCard({ caughtPokemon }: PokemonCardProps) {
         </div>
         <div className="text-sm text-gray-600">
           <div className="mb-1">
-            <span className="font-semibold">Level: </span>
+            <span className="font-semibold">Seviye: </span>
             {caughtPokemon.level}
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Types: </span>
+            <span className="font-semibold">Türler: </span>
             {pokemon.types.join(', ')}
           </div>
           <div>
-            <span className="font-semibold">Caught: </span>
+            <span className="font-semibold">Yakalandı: </span>
             {new Date(caughtPokemon.caught_at).toLocaleDateString()}
           </div>
         </div>

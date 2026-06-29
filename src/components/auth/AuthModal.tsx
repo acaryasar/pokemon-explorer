@@ -15,18 +15,44 @@ function AuthModal() {
             Pokemon Explorer
           </h1>
           <p className="text-gray-600">
-            Sign in to start your adventure!
+            Maceraya başlamak için giriş yapın!
           </p>
         </div>
 
         <div className="space-y-4">
           <input
             type="text"
-            placeholder="Enter your username"
+            placeholder="Kullanıcı adınızı girin"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
           />
+          <Button
+            onClick={() => {
+              if (!username.trim()) {
+                alert('Lütfen bir kullanıcı adı girin')
+                return
+              }
+              setAuthUsername(username)
+              signInAnonymously()
+            }}
+            variant="secondary"
+            size="lg"
+            className="w-full"
+            disabled={loading}
+          >
+            Misafir Olarak Oyna
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">veya</span>
+            </div>
+          </div>
+
           <Button
             onClick={signInWithGoogle}
             variant="primary"
@@ -53,32 +79,6 @@ function AuthModal() {
               />
             </svg>
             Google ile Devam Et
-          </Button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">or</span>
-            </div>
-          </div>
-
-          <Button
-            onClick={() => {
-              if (!username.trim()) {
-                alert('Lütfen bir kullanıcı adı girin')
-                return
-              }
-              setAuthUsername(username)
-              signInAnonymously()
-            }}
-            variant="secondary"
-            size="lg"
-            className="w-full"
-            disabled={loading}
-          >
-            Misafir Olarak Oyna
           </Button>
         </div>
 

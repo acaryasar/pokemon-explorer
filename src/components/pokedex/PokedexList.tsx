@@ -5,15 +5,15 @@ function PokedexList() {
   const { pokemon, loading } = usePokedexStore()
 
   if (loading) {
-    return <div className="text-white">Loading...</div>
+    return <div className="text-white">Yükleniyor...</div>
   }
 
   if (pokemon.length === 0) {
     return (
       <div className="text-center text-gray-400 py-8">
         <div className="text-6xl mb-4">📖</div>
-        <p>No Pokemon caught yet!</p>
-        <p className="text-sm">Go explore and catch some Pokemon.</p>
+        <p>Henüz Pokemon yakalanmadı!</p>
+        <p className="text-sm">Keşfe çıkın ve Pokemon yakalayın.</p>
       </div>
     )
   }

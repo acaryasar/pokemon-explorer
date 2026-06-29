@@ -34,6 +34,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { data, error } = await signInAnonymously()
     if (!error && data) {
       set({ user: data, loading: false })
+      // Update online player status
+      const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
+      await updateOnlinePlayer(data.id, useAuthStore.getState().username)
     } else {
       set({ loading: false })
       console.error('Anonymous sign in error:', error)

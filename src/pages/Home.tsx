@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../store/authStore'
 import Header from '../components/layout/Header'
-import Navigation from '../components/layout/Navigation'
 import AuthModal from '../components/auth/AuthModal'
 
 function Home() {
@@ -14,7 +13,7 @@ function Home() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-        <div className="text-white text-2xl">Loading...</div>
+        <div className="text-white text-2xl">Yükleniyor...</div>
       </div>
     )
   }
@@ -30,7 +29,6 @@ function Home() {
         <h1 className="text-4xl font-bold text-white text-center mb-8">
           Pokemon Explorer
         </h1>
-        <Navigation />
       </div>
     </div>
   )
