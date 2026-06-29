@@ -4,7 +4,7 @@ import Player from './Player'
 function Map() {
   const { playerPosition } = useGameStore()
 
-  const gridSize = 20
+  const gridSize = 15
   const tiles = []
 
   for (let y = 0; y < gridSize; y++) {

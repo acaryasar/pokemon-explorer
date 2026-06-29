@@ -34,13 +34,13 @@ export const useGameStore = create<GameState>((set, get) => ({
           newPosition.y = Math.max(0, newPosition.y - 1)
           break
         case 'down':
-          newPosition.y = Math.min(19, newPosition.y + 1)
+          newPosition.y = Math.min(14, newPosition.y + 1)
           break
         case 'left':
           newPosition.x = Math.max(0, newPosition.x - 1)
           break
         case 'right':
-          newPosition.x = Math.min(19, newPosition.x + 1)
+          newPosition.x = Math.min(14, newPosition.x + 1)
           break
       }
 

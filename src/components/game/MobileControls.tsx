@@ -9,7 +9,7 @@ function MobileControls() {
   }
 
   return (
-    <div className="md:hidden fixed bottom-4 right-4 z-50">
+    <div className="md:hidden fixed bottom-24 right-4 z-50">
       <div className="grid grid-cols-3 gap-2 bg-gray-800 p-3 rounded-xl">
         <div></div>
         <button
