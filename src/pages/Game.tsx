@@ -49,12 +49,12 @@ function Game() {
             {isPlaying ? '🔊' : '🔇'}
           </button>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center relative">
           <Map />
+          <MobileControls />
         </div>
         <PokemonEncounter />
       </div>
-      <MobileControls />
     </div>
   )
 }
