@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
 function Header() {
-  const { user, signOut, username } = useAuthStore()
+  const { user, signOut, username, profile } = useAuthStore()
 
   return (
     <header className="bg-gray-800 shadow-lg">
@@ -12,25 +12,30 @@ function Header() {
         </Link>
         <div className="flex items-center gap-4">
           {user && (
-            <span className="text-white font-semibold">
-              👤 {username || user.email}
-            </span>
+            <div className="text-right">
+              <span className="text-white font-semibold block">
+                👤 {username || user.email}
+              </span>
+              <span className="text-yellow-400 text-sm font-semibold">
+                ⭐ {profile?.pokemon_points || 0} Puan
+              </span>
+            </div>
           )}
           <nav className="flex gap-4">
-            <Link to="/game" className="text-white hover:text-blue-400 transition-colors">
-              Oyun
+            <Link to="/game" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+              <span>🎮</span> Oyun
             </Link>
-            <Link to="/pokedex" className="text-white hover:text-blue-400 transition-colors">
-              Pokedex
+            <Link to="/pokedex" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+              <span>📖</span> Pokedex
             </Link>
-            <Link to="/bag" className="text-white hover:text-blue-400 transition-colors">
-              Çanta
+            <Link to="/bag" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+              <span>🎒</span> Çanta
             </Link>
-            <Link to="/friends" className="text-white hover:text-blue-400 transition-colors">
-              Arkadaşlar
+            <Link to="/friends" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+              <span>👥</span> Arkadaşlar
             </Link>
-            <Link to="/settings" className="text-white hover:text-blue-400 transition-colors">
-              Ayarlar
+            <Link to="/settings" className="text-white hover:text-blue-400 transition-colors flex items-center gap-2">
+              <span>⚙️</span> Ayarlar
             </Link>
           </nav>
           {user && (

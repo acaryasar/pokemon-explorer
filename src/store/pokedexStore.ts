@@ -53,13 +53,15 @@ export const usePokedexStore = create<PokedexState>((set, get) => ({
       return { success: false, error: 'Bu pokemon evrimleşemez' }
     }
 
-    if (pokemon.level < pokemonData.evolutionLevel) {
-      return { success: false, error: `Level ${pokemonData.evolutionLevel} gerekli` }
+    const user = useAuthStore.getState().user
+    const profile = useAuthStore.getState().profile
+    if (!user || !profile) {
+      return { success: false, error: 'Kullanıcı bulunamadı' }
     }
 
-    const user = useAuthStore.getState().user
-    if (!user) {
-      return { success: false, error: 'Kullanıcı bulunamadı' }
+    // Check if user has enough points (50 points required for evolution)
+    if (profile.pokemon_points < 50) {
+      return { success: false, error: '50 puan gerekli' }
     }
 
     // Update in database
@@ -68,7 +70,7 @@ export const usePokedexStore = create<PokedexState>((set, get) => ({
       return { success: false, error: 'Evrim başarısız' }
     }
 
-    // Update local state
+    // Update local state - pokemon stays in same position
     set((state) => ({
       pokemon: state.pokemon.map(p => 
         p.id === caughtPokemonId 
@@ -76,6 +78,10 @@ export const usePokedexStore = create<PokedexState>((set, get) => ({
           : p
       )
     }))
+
+    // Reload profile to get updated points
+    const { loadProfile } = useAuthStore.getState()
+    await loadProfile()
 
     return { success: true, error: null }
   },
