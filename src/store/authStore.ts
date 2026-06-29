@@ -8,17 +8,20 @@ interface AuthState {
   user: User | null
   profile: Profile | null
   loading: boolean
+  username: string
   signInWithGoogle: () => Promise<void>
   signInAnonymously: () => Promise<void>
   signOut: () => Promise<void>
   loadProfile: () => Promise<void>
   setUser: (user: User | null) => void
+  setUsername: (username: string) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   profile: null,
   loading: true,
+  username: '',
 
   signInWithGoogle: async () => {
     const { data, error } = await signInWithGoogle()
@@ -60,6 +63,10 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setUser: (user) => {
     set({ user, loading: false })
+  },
+
+  setUsername: (username) => {
+    set({ username })
   },
 }))
 

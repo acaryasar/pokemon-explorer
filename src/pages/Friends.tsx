@@ -7,20 +7,20 @@ function Friends() {
     <div className="min-h-screen bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-6">Friends</h1>
+        <h1 className="text-3xl font-bold text-white mb-6">Arkadaşlar</h1>
         
         <div className="max-w-2xl space-y-6">
           {/* Add Friend */}
           <Card>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-white mb-4">Add Friend</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Arkadaş Ekle</h2>
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Enter friend's username or email"
+                  placeholder="Arkadaşın kullanıcı adını veya e-postasını girin"
                   className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
                 />
-                <Button variant="primary">Add</Button>
+                <Button variant="primary">Ekle</Button>
               </div>
             </div>
           </Card>
@@ -28,11 +28,11 @@ function Friends() {
           {/* Friends List */}
           <Card>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-white mb-4">Friends List</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Arkadaş Listesi</h2>
               <div className="text-center text-gray-400 py-8">
                 <div className="text-6xl mb-4">👥</div>
-                <p>No friends yet</p>
-                <p className="text-sm mt-2">Add friends to trade Pokemon and compete!</p>
+                <p>Henüz arkadaş yok</p>
+                <p className="text-sm mt-2">Pokemon takası yapmak ve rekabet etmek için arkadaş ekleyin!</p>
               </div>
             </div>
           </Card>
@@ -40,9 +40,9 @@ function Friends() {
           {/* Pending Requests */}
           <Card>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-white mb-4">Pending Requests</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Bekleyen İstekler</h2>
               <div className="text-center text-gray-400 py-8">
-                <p>No pending friend requests</p>
+                <p>Bekleyen arkadaş isteği yok</p>
               </div>
             </div>
           </Card>
@@ -50,7 +50,7 @@ function Friends() {
           {/* Leaderboard */}
           <Card>
             <div className="p-6">
-              <h2 className="text-xl font-bold text-white mb-4">Leaderboard</h2>
+              <h2 className="text-xl font-bold text-white mb-4">Lider Tablosu</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
                   <div className="flex items-center gap-3">

@@ -26,7 +26,7 @@ function Game() {
     <div className="min-h-screen bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-4">Game</h1>
+        <h1 className="text-3xl font-bold text-white mb-4">Oyun</h1>
         <div className="flex justify-center">
           <Map />
         </div>

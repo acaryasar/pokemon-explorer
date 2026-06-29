@@ -36,7 +36,7 @@ function Map() {
         {tiles}
       </div>
       <div className="mt-4 text-white text-center text-sm">
-        Use arrow keys or WASD to move
+        Hareket etmek için ok tuşlarını veya WASD kullanın
       </div>
     </div>
   )
