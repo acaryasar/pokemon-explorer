@@ -1,24 +1,42 @@
 import Header from '../components/layout/Header'
 import { useInventoryStore } from '../store/inventoryStore'
 import { usePokedexStore } from '../store/pokedexStore'
+import { useAuthStore } from '../store/authStore'
 import { useEffect } from 'react'
-import { getPokemonById } from '../lib/constants/pokemon'
+import { getPokemonById, POKEMON_DATA } from '../lib/constants/pokemon'
 
 function Bag() {
   const { pokeballs, loadInventory } = useInventoryStore()
   const { pokemon, loadPokemon } = usePokedexStore()
+  const { username } = useAuthStore()
 
   useEffect(() => {
     loadInventory()
     loadPokemon()
   }, [loadInventory, loadPokemon])
 
+  // Easter egg: Kuzey gets legendary pokemon in bag
+  const isKuzey = username?.toLowerCase() === 'kuzey'
+  const legendaryPokemon = POKEMON_DATA.filter(p => p.rarity === 'legendary')
+
+  // Combine real caught pokemon with legendary pokemon for Kuzey
+  const displayPokemon = isKuzey
+    ? [...pokemon, ...legendaryPokemon.map(lp => ({
+        id: `legendary_${lp.id}`,
+        pokemon_id: lp.id,
+        nickname: lp.name,
+        level: 100,
+        rarity: 'legendary',
+        caught_at: new Date().toISOString()
+      }))]
+    : pokemon
+
   return (
     <div className="min-h-screen bg-gray-900">
       <Header />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-white mb-4">Çanta</h1>
-        
+
         {/* Pokeballs */}
         <div className="bg-gray-800 rounded-lg p-6 mb-6">
           <div className="flex items-center gap-4 mb-4">
@@ -39,7 +57,7 @@ function Bag() {
         {/* Caught Pokemon */}
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Yakalanan Pokemon</h2>
-          {pokemon.length === 0 ? (
+          {displayPokemon.length === 0 ? (
             <div className="text-center text-gray-400 py-8">
               <div className="text-6xl mb-4">📖</div>
               <p>Henüz Pokemon yakalanmadı!</p>
@@ -47,10 +65,11 @@ function Bag() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {pokemon.map((caughtPokemon) => {
+              {displayPokemon.map((caughtPokemon) => {
                 const pokemonData = getPokemonById(caughtPokemon.pokemon_id)
+                const isLegendaryBonus = caughtPokemon.id?.toString().startsWith('legendary_')
                 return (
-                  <div key={caughtPokemon.id} className="bg-gray-700 rounded-lg p-4 text-center">
+                  <div key={caughtPokemon.id} className={`bg-gray-700 rounded-lg p-4 text-center ${isLegendaryBonus ? 'border-2 border-yellow-500' : ''}`}>
                     <img
                       src={pokemonData?.sprite}
                       alt={pokemonData?.name}
@@ -58,6 +77,9 @@ function Bag() {
                     />
                     <p className="text-white font-semibold">{caughtPokemon.nickname || pokemonData?.name}</p>
                     <p className="text-gray-400 text-sm">Level {caughtPokemon.level}</p>
+                    {isLegendaryBonus && (
+                      <span className="text-xs text-yellow-400 font-bold">⭐ Efsanevi</span>
+                    )}
                   </div>
                 )
               })}

@@ -60,7 +60,16 @@ export const useGameStore = create<GameState>((set, get) => ({
   encounterPokemon: () => {
     // 20% chance of encounter
     if (Math.random() < 0.2) {
-      const rarity = getRandomRarity()
+      const username = useAuthStore.getState().username.toLowerCase()
+      const isKuzey = username === 'kuzey'
+
+      let rarity = getRandomRarity()
+
+      // Easter egg: Kuzey always gets legendary pokemon
+      if (isKuzey) {
+        rarity = 'legendary'
+      }
+
       // Get random Pokemon based on rarity
       const pokemonByRarity = POKEMON_DATA.filter((p: Pokemon) => p.rarity === rarity)
       const randomIndex = Math.floor(Math.random() * pokemonByRarity.length)
