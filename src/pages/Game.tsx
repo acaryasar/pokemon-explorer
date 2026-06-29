@@ -4,7 +4,9 @@ import PokemonEncounter from '../components/game/PokemonEncounter'
 import MobileControls from '../components/game/MobileControls'
 import OnlinePlayers from '../components/game/OnlinePlayers'
 import { useMovement } from '../hooks/useMovement'
+import { useAudio } from '../hooks/useAudio'
 import { useAuthStore } from '../store/authStore'
+import { usePokedexStore } from '../store/pokedexStore'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 
@@ -12,12 +14,24 @@ function Game() {
   useMovement()
   const { user } = useAuthStore()
   const navigate = useNavigate()
+  const { toggle, isPlaying } = useAudio('/assets/pokemon-theme.mp3')
+  const { loadPokemon } = usePokedexStore()
 
   useEffect(() => {
     if (!user) {
       navigate('/')
     }
   }, [user, navigate])
+
+  useEffect(() => {
+    if (user) {
+      loadPokemon()
+    }
+  }, [user, loadPokemon])
+
+  const handleMusicToggle = () => {
+    toggle()
+  }
 
   if (!user) {
     return null
@@ -28,6 +42,12 @@ function Game() {
       <Header />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-white mb-4">Oyun</h1>
+        <button
+          onClick={handleMusicToggle}
+          className="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+        >
+          {isPlaying ? '🔊 Müzik Durdur' : '🔇 Müzik Başlat'}
+        </button>
         <div className="flex justify-center">
           <Map />
         </div>

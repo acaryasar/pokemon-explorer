@@ -1,19 +1,22 @@
 import { supabase } from './client'
 import type { AuthError, User } from '@supabase/supabase-js'
 
-export async function signInWithGoogle(): Promise<{ data: { url: string } | null; error: AuthError | null }> {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin,
-    },
+export async function signInWithUsername(username: string, password: string): Promise<{ data: User | null; error: AuthError | null }> {
+  const email = `${username}@pokemon-explorer.local`
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
   })
 
-  return { data: data.url ? { url: data.url } : null, error }
+  return { data: data.user, error }
 }
 
-export async function signInAnonymously(): Promise<{ data: User | null; error: AuthError | null }> {
-  const { data, error } = await supabase.auth.signInAnonymously()
+export async function signUpWithUsername(username: string, password: string): Promise<{ data: User | null; error: AuthError | null }> {
+  const email = `${username}@pokemon-explorer.local`
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  })
 
   return { data: data.user, error }
 }

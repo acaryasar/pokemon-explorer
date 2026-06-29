@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { User } from '@supabase/supabase-js'
-import { signInWithGoogle, signInAnonymously, signOut, getCurrentUser, onAuthStateChange } from '../lib/supabase/auth'
+import { signInWithUsername, signUpWithUsername, signOut, getCurrentUser, onAuthStateChange } from '../lib/supabase/auth'
 import { getProfile } from '../lib/supabase/profile'
 import type { Profile } from '../lib/types/player'
 
@@ -9,8 +9,8 @@ interface AuthState {
   profile: Profile | null
   loading: boolean
   username: string
-  signInWithGoogle: () => Promise<void>
-  signInAnonymously: () => Promise<void>
+  signInWithUsername: (username: string, password: string) => Promise<{ success: boolean; error: string | null }>
+  signUpWithUsername: (username: string, password: string) => Promise<{ success: boolean; error: string | null }>
   signOut: () => Promise<void>
   loadProfile: () => Promise<void>
   setUser: (user: User | null) => void
@@ -23,29 +23,37 @@ export const useAuthStore = create<AuthState>((set) => ({
   loading: true,
   username: '',
 
-  signInWithGoogle: async () => {
-    const { data, error } = await signInWithGoogle()
-    if (!error && data?.url) {
-      window.location.href = data.url
+  signInWithUsername: async (username: string, password: string) => {
+    const { data, error } = await signInWithUsername(username, password)
+    if (!error && data) {
+      set({ user: data, loading: false, username })
+      // Update online player status
+      const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
+      await updateOnlinePlayer(data.id, username)
+      return { success: true, error: null }
+    } else {
+      set({ loading: false })
+      return { success: false, error: error?.message || 'Giriş başarısız' }
     }
   },
 
-  signInAnonymously: async () => {
-    const { data, error } = await signInAnonymously()
+  signUpWithUsername: async (username: string, password: string) => {
+    const { data, error } = await signUpWithUsername(username, password)
     if (!error && data) {
-      set({ user: data, loading: false })
+      set({ user: data, loading: false, username })
       // Update online player status
       const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
-      await updateOnlinePlayer(data.id, useAuthStore.getState().username)
+      await updateOnlinePlayer(data.id, username)
+      return { success: true, error: null }
     } else {
       set({ loading: false })
-      console.error('Anonymous sign in error:', error)
+      return { success: false, error: error?.message || 'Kayıt başarısız' }
     }
   },
 
   signOut: async () => {
     await signOut()
-    set({ user: null, profile: null, loading: false })
+    set({ user: null, profile: null, loading: false, username: '' })
   },
 
   loadProfile: async () => {
@@ -53,18 +61,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (user) {
       set({ user, loading: false })
       // Fetch profile from Supabase
-      if (!user.is_anonymous) {
-        const { data: profile } = await getProfile(user.id)
-        if (profile) {
-          set({ profile })
-          // Update online player status
-          const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
-          await updateOnlinePlayer(user.id, profile.username || 'User')
-        }
-      } else {
-        // For anonymous users, update online status with stored username
+      const { data: profile } = await getProfile(user.id)
+      if (profile) {
+        set({ profile, username: profile.username || '' })
+        // Update online player status
         const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
-        await updateOnlinePlayer(user.id, useAuthStore.getState().username || 'Anonymous')
+        await updateOnlinePlayer(user.id, profile.username || 'User')
       }
     } else {
       set({ loading: false })
