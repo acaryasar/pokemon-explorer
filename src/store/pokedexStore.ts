@@ -57,8 +57,13 @@ export const usePokedexStore = create<PokedexState>((set, get) => ({
       return { success: false, error: `Level ${pokemonData.evolutionLevel} gerekli` }
     }
 
+    const user = useAuthStore.getState().user
+    if (!user) {
+      return { success: false, error: 'Kullanıcı bulunamadı' }
+    }
+
     // Update in database
-    const { error } = await evolvePokemonDB(caughtPokemonId, pokemonData.evolvesTo!)
+    const { error } = await evolvePokemonDB(caughtPokemonId, pokemonData.evolvesTo!, user.id)
     if (error) {
       return { success: false, error: 'Evrim başarısız' }
     }

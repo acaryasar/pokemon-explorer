@@ -50,3 +50,14 @@ export async function addPokeballs(userId: string, amount: number): Promise<{ da
   const newPokeballs = currentProfile.pokeballs + amount
   return updateProfile(userId, { pokeballs: newPokeballs })
 }
+
+export async function addPokemonPoints(userId: string, amount: number): Promise<{ data: Profile | null; error: any }> {
+  const { data: currentProfile } = await getProfile(userId)
+  
+  if (!currentProfile) {
+    return { data: null, error: 'Profile not found' }
+  }
+
+  const newPoints = currentProfile.pokemon_points + amount
+  return updateProfile(userId, { pokemon_points: newPoints })
+}

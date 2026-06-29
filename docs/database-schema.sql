@@ -11,6 +11,7 @@ CREATE TABLE profiles (
   level INTEGER DEFAULT 1,
   xp INTEGER DEFAULT 0,
   pokeballs INTEGER DEFAULT 10,
+  pokemon_points INTEGER DEFAULT 10000,
   avatar JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

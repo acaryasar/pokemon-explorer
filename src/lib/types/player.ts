@@ -4,6 +4,7 @@ export interface Profile {
   level: number
   xp: number
   pokeballs: number
+  pokemon_points: number
   avatar: Record<string, any>
   created_at: string
   updated_at: string

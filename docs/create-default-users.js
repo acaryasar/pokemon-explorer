@@ -5,15 +5,15 @@
 const { createClient } = require('@supabase/supabase-js')
 
 // Replace with your Supabase URL and Anon Key
-const supabaseUrl = 'YOUR_SUPABASE_URL'
-const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
+const supabaseUrl = 'https://vcnfschdycvesztbshpj.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbmZzY2hkeWN2ZXN6dGJzaHBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MDU2NzMsImV4cCI6MjA5ODI4MTY3M30.hIKHT4rKNSK88KJ_-O31nu3XPOulcMuBehSE_d_RifI'
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const defaultUsers = [
-  { username: 'kuzey', password: '202020' },
-  { username: 'yasar', password: '198419' },
-  { username: 'ruzgar', password: '201620' }
+  { username: 'kuzey', password: '202020', pokemonPoints: 100000 },
+  { username: 'yasar', password: '198419', pokemonPoints: 10000 },
+  { username: 'ruzgar', password: '201620', pokemonPoints: 10000 }
 ]
 
 async function createDefaultUsers() {
@@ -31,6 +31,20 @@ async function createDefaultUsers() {
       console.error(`Error creating ${user.username}:`, error.message)
     } else {
       console.log(`Successfully created ${user.username}`)
+      
+      // Update profile with pokemon points
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ pokemon_points: user.pokemonPoints })
+          .eq('id', data.user.id)
+        
+        if (profileError) {
+          console.error(`Error updating pokemon points for ${user.username}:`, profileError.message)
+        } else {
+          console.log(`Set pokemon points for ${user.username}: ${user.pokemonPoints}`)
+        }
+      }
     }
   }
 }

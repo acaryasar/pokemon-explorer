@@ -1,5 +1,6 @@
 import { supabase } from './client'
 import type { CaughtPokemon } from '../types/pokemon'
+import { addPokemonPoints } from './profile'
 
 export async function catchPokemon(
   userId: string,
@@ -16,6 +17,11 @@ export async function catchPokemon(
     })
     .select()
     .single()
+
+  if (!error) {
+    // Add 100 points for catching a pokemon
+    await addPokemonPoints(userId, 100)
+  }
 
   return { data, error }
 }
@@ -46,12 +52,18 @@ export async function updatePokemonNickname(
 
 export async function evolvePokemon(
   caughtPokemonId: string,
-  newPokemonId: number
+  newPokemonId: number,
+  userId: string
 ): Promise<{ error: any }> {
   const { error } = await supabase
     .from('pokemon_caught')
     .update({ pokemon_id: newPokemonId })
     .eq('id', caughtPokemonId)
+
+  if (!error) {
+    // Deduct 50 points for evolution
+    await addPokemonPoints(userId, -50)
+  }
 
   return { error }
 }
