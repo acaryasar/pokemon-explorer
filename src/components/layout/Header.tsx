@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
 function Header() {
-  const { user, signOut } = useAuthStore()
+  const { user, signOut, username } = useAuthStore()
 
   return (
     <header className="bg-gray-800 shadow-lg">
@@ -11,21 +11,26 @@ function Header() {
           Pokemon Explorer
         </Link>
         <div className="flex items-center gap-4">
+          {user && (
+            <span className="text-white font-semibold">
+              👤 {username || user.email}
+            </span>
+          )}
           <nav className="flex gap-4">
             <Link to="/game" className="text-white hover:text-blue-400 transition-colors">
-              Game
+              Oyun
             </Link>
             <Link to="/pokedex" className="text-white hover:text-blue-400 transition-colors">
               Pokedex
             </Link>
             <Link to="/bag" className="text-white hover:text-blue-400 transition-colors">
-              Bag
+              Çanta
             </Link>
             <Link to="/friends" className="text-white hover:text-blue-400 transition-colors">
-              Friends
+              Arkadaşlar
             </Link>
             <Link to="/settings" className="text-white hover:text-blue-400 transition-colors">
-              Settings
+              Ayarlar
             </Link>
           </nav>
           {user && (
@@ -33,7 +38,7 @@ function Header() {
               onClick={signOut}
               className="text-white hover:text-red-400 transition-colors text-sm"
             >
-              Sign Out
+              Çıkış Yap
             </button>
           )}
         </div>

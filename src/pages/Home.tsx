@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../store/authStore'
 import Header from '../components/layout/Header'
+import Navigation from '../components/layout/Navigation'
 import AuthModal from '../components/auth/AuthModal'
 
 function Home() {
@@ -29,6 +30,7 @@ function Home() {
         <h1 className="text-4xl font-bold text-white text-center mb-8">
           Pokemon Explorer
         </h1>
+        <Navigation />
       </div>
     </div>
   )
