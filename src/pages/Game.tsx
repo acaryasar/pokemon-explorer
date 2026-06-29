@@ -25,17 +25,6 @@ function Game() {
   useEffect(() => {
     if (user) {
       loadPokemon()
-      // Request fullscreen on user login
-      const requestFullscreen = async () => {
-        try {
-          if (document.documentElement.requestFullscreen) {
-            await document.documentElement.requestFullscreen()
-          }
-        } catch (error) {
-          console.log('Fullscreen request failed:', error)
-        }
-      }
-      requestFullscreen()
     }
   }, [user, loadPokemon])
 
