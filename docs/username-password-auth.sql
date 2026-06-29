@@ -50,6 +50,6 @@ CREATE TRIGGER on_auth_user_created
 -- The SQL below is for reference - actual user creation requires auth API
 
 -- Default users to create:
--- kuzey / 2020 -> email: kuzey@pokemon-explorer.local
--- yasar / 1984 -> email: yasar@pokemon-explorer.local  
--- rüzgar / 2016 -> email: ruzgar@pokemon-explorer.local
+-- kuzey / 202020 -> email: kuzey@pokemon-explorer.local
+-- yasar / 198419 -> email: yasar@pokemon-explorer.local  
+-- rüzgar / 201620 -> email: ruzgar@pokemon-explorer.local

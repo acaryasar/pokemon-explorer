@@ -11,9 +11,9 @@ const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const defaultUsers = [
-  { username: 'kuzey', password: '2020' },
-  { username: 'yasar', password: '1984' },
-  { username: 'ruzgar', password: '2016' }
+  { username: 'kuzey', password: '202020' },
+  { username: 'yasar', password: '198419' },
+  { username: 'ruzgar', password: '201620' }
 ]
 
 async function createDefaultUsers() {
