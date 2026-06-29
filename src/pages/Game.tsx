@@ -1,7 +1,6 @@
 import Map from '../components/game/Map'
 import PokemonEncounter from '../components/game/PokemonEncounter'
 import MobileControls from '../components/game/MobileControls'
-import OnlinePlayers from '../components/game/OnlinePlayers'
 import Header from '../components/layout/Header'
 import { useMovement } from '../hooks/useMovement'
 import { useAudio } from '../hooks/useAudio'
@@ -56,7 +55,6 @@ function Game() {
         <PokemonEncounter />
       </div>
       <MobileControls />
-      <OnlinePlayers />
     </div>
   )
 }
