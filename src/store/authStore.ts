@@ -15,7 +15,7 @@ interface AuthState {
   setUser: (user: User | null) => void
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   profile: null,
   loading: true,
@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 }))
 
 // Initialize auth state listener
-onAuthStateChange((event, session) => {
+onAuthStateChange((_event, session) => {
   const user = session?.user || null
   useAuthStore.setState({ user, loading: false })
 })
