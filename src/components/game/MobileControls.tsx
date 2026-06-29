@@ -71,7 +71,7 @@ function MobileControls() {
       moveIntervalRef.current = setInterval(() => {
         movePlayer(direction)
         encounterPokemon()
-      }, 300)
+      }, 500)
     } else {
       // Clear interval if no direction
       if (moveIntervalRef.current) {
