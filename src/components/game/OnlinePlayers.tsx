@@ -1,13 +1,30 @@
 import { useEffect, useState } from 'react'
-import { subscribeToOnlinePlayers, type OnlinePlayer } from '../../lib/supabase/realtime'
+import { subscribeToOnlinePlayers, updateOnlinePlayer, type OnlinePlayer } from '../../lib/supabase/realtime'
+import { useAuthStore } from '../../store/authStore'
 
 function OnlinePlayers() {
   const [players, setPlayers] = useState<OnlinePlayer[]>([])
+  const { user, username, profile } = useAuthStore()
 
   useEffect(() => {
     const unsubscribe = subscribeToOnlinePlayers(setPlayers)
     return unsubscribe
   }, [])
+
+  // Update own online status every 30 seconds
+  useEffect(() => {
+    if (!user) return
+
+    const updateStatus = async () => {
+      const displayName = profile?.username || username || 'Anonymous'
+      await updateOnlinePlayer(user.id, displayName)
+    }
+
+    updateStatus()
+    const interval = setInterval(updateStatus, 30000)
+
+    return () => clearInterval(interval)
+  }, [user, username, profile])
 
   return (
     <div className="bg-gray-800 rounded-lg p-4 mb-4">

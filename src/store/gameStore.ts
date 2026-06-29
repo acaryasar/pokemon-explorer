@@ -28,7 +28,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   movePlayer: (direction: Direction) => {
     set((state) => {
       const newPosition = { ...state.playerPosition }
-      
+
       switch (direction) {
         case 'up':
           newPosition.y = Math.max(0, newPosition.y - 1)
@@ -42,6 +42,15 @@ export const useGameStore = create<GameState>((set, get) => ({
         case 'right':
           newPosition.x = Math.min(14, newPosition.x + 1)
           break
+      }
+
+      // Update online player position in database
+      const user = useAuthStore.getState().user
+      const username = useAuthStore.getState().username
+      if (user) {
+        import('../lib/supabase/realtime').then(({ updateOnlinePlayer }) => {
+          updateOnlinePlayer(user.id, username || 'Anonymous', newPosition.x, newPosition.y)
+        })
       }
 
       return { playerPosition: newPosition }

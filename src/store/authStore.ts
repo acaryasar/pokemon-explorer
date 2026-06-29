@@ -57,7 +57,14 @@ export const useAuthStore = create<AuthState>((set) => ({
         const { data: profile } = await getProfile(user.id)
         if (profile) {
           set({ profile })
+          // Update online player status
+          const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
+          await updateOnlinePlayer(user.id, profile.username || 'User')
         }
+      } else {
+        // For anonymous users, update online status with stored username
+        const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
+        await updateOnlinePlayer(user.id, useAuthStore.getState().username || 'Anonymous')
       }
     } else {
       set({ loading: false })
