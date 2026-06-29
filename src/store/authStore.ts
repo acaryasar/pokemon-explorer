@@ -27,9 +27,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { data, error } = await signInWithUsername(username, password)
     if (!error && data) {
       set({ user: data, loading: false, username })
+      // Fetch profile from Supabase
+      const { data: profile } = await getProfile(data.id)
+      if (profile) {
+        set({ profile, username: profile.username || username })
+      }
       // Update online player status
       const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
-      await updateOnlinePlayer(data.id, username)
+      await updateOnlinePlayer(data.id, profile?.username || username)
       return { success: true, error: null }
     } else {
       set({ loading: false })
@@ -41,9 +46,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { data, error } = await signUpWithUsername(username, password)
     if (!error && data) {
       set({ user: data, loading: false, username })
+      // Fetch profile from Supabase
+      const { data: profile } = await getProfile(data.id)
+      if (profile) {
+        set({ profile, username: profile.username || username })
+      }
       // Update online player status
       const { updateOnlinePlayer } = await import('../lib/supabase/realtime')
-      await updateOnlinePlayer(data.id, username)
+      await updateOnlinePlayer(data.id, profile?.username || username)
       return { success: true, error: null }
     } else {
       set({ loading: false })
