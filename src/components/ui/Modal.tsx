@@ -35,7 +35,7 @@ function Modal({ isOpen, onClose, children, className }: ModalProps) {
     >
       <div
         className={cn(
-          'bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 transform transition-all',
+          'bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 p-4 transform transition-all',
           className
         )}
         onClick={(e) => e.stopPropagation()}

@@ -6,7 +6,7 @@ function MobileControls() {
   const [isDragging, setIsDragging] = useState(false)
   const [isMovingJoystick, setIsMovingJoystick] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [joystickPosition, setJoystickPosition] = useState({ x: 16, y: 0 }) // Position relative to map
+  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 }) // Position relative to container (centered initially)
   const joystickRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLDivElement>(null)
   const moveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -112,6 +112,10 @@ function MobileControls() {
     setJoystickPosition({ x: newX, y: newY })
   }
 
+  const handleJoystickDragEnd = () => {
+    setIsMovingJoystick(false)
+  }
+
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isMovingJoystick) return
     e.preventDefault()
@@ -126,6 +130,14 @@ function MobileControls() {
       e.preventDefault()
       const touch = e.touches[0]
       handleMove(touch.clientX, touch.clientY)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    if (isMovingJoystick) {
+      handleJoystickDragEnd()
+    } else {
+      handleEnd()
     }
   }
 
@@ -144,6 +156,14 @@ function MobileControls() {
     }
   }
 
+  const handleMouseUp = () => {
+    if (isMovingJoystick) {
+      handleJoystickDragEnd()
+    } else {
+      handleEnd()
+    }
+  }
+
   // Clean up interval on unmount
   useEffect(() => {
     return () => {
@@ -154,12 +174,12 @@ function MobileControls() {
   }, [])
 
   return (
-    <div ref={containerRef} className="md:hidden relative z-50">
+    <div ref={containerRef} className="md:hidden relative z-50 w-full h-full">
       <div
         className="absolute"
         style={{
-          left: `${joystickPosition.x}px`,
-          top: `${joystickPosition.y}px`,
+          left: `calc(50% + ${joystickPosition.x}px - 64px)`,
+          top: `calc(100% + ${joystickPosition.y}px - 150px)`,
         }}
       >
         <div
@@ -167,11 +187,11 @@ function MobileControls() {
           className="relative w-32 h-32 bg-gray-800/80 rounded-full border-4 border-gray-700 touch-none select-none cursor-move"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
-          onTouchEnd={handleEnd}
+          onTouchEnd={handleTouchEnd}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
-          onMouseUp={handleEnd}
-          onMouseLeave={handleEnd}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
           {/* Drag handle */}
           <div
