@@ -16,6 +16,16 @@ function AuthModal() {
       return
     }
 
+    if (password.length !== 4) {
+      setError('Şifre 4 karakter olmalıdır')
+      return
+    }
+
+    if (!/^\d+$/.test(password)) {
+      setError('Şifre sadece sayısal karakterlerden oluşmalıdır')
+      return
+    }
+
     const result = isLogin 
       ? await signInWithUsername(username, password)
       : await signUpWithUsername(username, password)
