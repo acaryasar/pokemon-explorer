@@ -30,12 +30,12 @@ function Modal({ isOpen, onClose, children, className }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm pt-4 md:items-center"
       onClick={onClose}
     >
       <div
         className={cn(
-          'bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 p-4 transform transition-all',
+          'bg-white rounded-xl shadow-2xl w-full h-full md:max-w-md md:h-auto md:mx-4 md:p-6 transform transition-all',
           className
         )}
         onClick={(e) => e.stopPropagation()}
