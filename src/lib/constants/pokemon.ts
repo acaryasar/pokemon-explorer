@@ -9,6 +9,8 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
     baseStats: { hp: 45, attack: 49, defense: 49, speed: 45 },
     rarity: 'common',
+    evolvesTo: 2,
+    evolutionLevel: 16,
   },
   {
     id: 4,
@@ -17,6 +19,8 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png',
     baseStats: { hp: 39, attack: 52, defense: 43, speed: 65 },
     rarity: 'common',
+    evolvesTo: 5,
+    evolutionLevel: 16,
   },
   {
     id: 7,
@@ -25,6 +29,8 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png',
     baseStats: { hp: 44, attack: 48, defense: 65, speed: 43 },
     rarity: 'common',
+    evolvesTo: 8,
+    evolutionLevel: 16,
   },
   {
     id: 10,
@@ -349,6 +355,8 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png',
     baseStats: { hp: 55, attack: 55, defense: 50, speed: 55 },
     rarity: 'rare',
+    evolvesTo: 135,
+    evolutionLevel: 20,
   },
   {
     id: 135,

@@ -43,3 +43,15 @@ export async function updatePokemonNickname(
 
   return { error }
 }
+
+export async function evolvePokemon(
+  caughtPokemonId: string,
+  newPokemonId: number
+): Promise<{ error: any }> {
+  const { error } = await supabase
+    .from('pokemon_caught')
+    .update({ pokemon_id: newPokemonId })
+    .eq('id', caughtPokemonId)
+
+  return { error }
+}

@@ -12,6 +12,8 @@ export interface Pokemon {
     speed: number
   }
   rarity: Rarity
+  evolvesTo?: number
+  evolutionLevel?: number
 }
 
 export interface CaughtPokemon {

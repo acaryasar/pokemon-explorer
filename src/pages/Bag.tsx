@@ -2,18 +2,27 @@ import Header from '../components/layout/Header'
 import { useInventoryStore } from '../store/inventoryStore'
 import { usePokedexStore } from '../store/pokedexStore'
 import { useAuthStore } from '../store/authStore'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getPokemonById, POKEMON_DATA } from '../lib/constants/pokemon'
 
 function Bag() {
   const { pokeballs, loadInventory } = useInventoryStore()
-  const { pokemon, loadPokemon } = usePokedexStore()
+  const { pokemon, loadPokemon, evolvePokemon } = usePokedexStore()
   const { username } = useAuthStore()
+  const [evolutionError, setEvolutionError] = useState<string | null>(null)
 
   useEffect(() => {
     loadInventory()
     loadPokemon()
   }, [loadInventory, loadPokemon])
+
+  const handleEvolve = async (caughtPokemonId: string) => {
+    setEvolutionError(null)
+    const result = await evolvePokemon(caughtPokemonId)
+    if (!result.success) {
+      setEvolutionError(result.error)
+    }
+  }
 
   // Easter egg: Kuzey gets legendary pokemon in bag
   const isKuzey = username?.toLowerCase() === 'kuzey'
@@ -57,6 +66,11 @@ function Bag() {
         {/* Caught Pokemon */}
         <div className="bg-gray-800 rounded-lg p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Yakalanan Pokemon</h2>
+          {evolutionError && (
+            <div className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-2 rounded mb-4">
+              {evolutionError}
+            </div>
+          )}
           {displayPokemon.length === 0 ? (
             <div className="text-center text-gray-400 py-8">
               <div className="text-6xl mb-4">📖</div>
@@ -68,6 +82,7 @@ function Bag() {
               {displayPokemon.map((caughtPokemon) => {
                 const pokemonData = getPokemonById(caughtPokemon.pokemon_id)
                 const isLegendaryBonus = caughtPokemon.id?.toString().startsWith('legendary_')
+                const canEvolve = pokemonData?.evolvesTo && !isLegendaryBonus
                 return (
                   <div key={caughtPokemon.id} className={`bg-gray-700 rounded-lg p-4 text-center ${isLegendaryBonus ? 'border-2 border-yellow-500' : ''}`}>
                     <img
@@ -79,6 +94,14 @@ function Bag() {
                     <p className="text-gray-400 text-sm">Level {caughtPokemon.level}</p>
                     {isLegendaryBonus && (
                       <span className="text-xs text-yellow-400 font-bold">⭐ Efsanevi</span>
+                    )}
+                    {canEvolve && (
+                      <button
+                        onClick={() => handleEvolve(caughtPokemon.id)}
+                        className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-colors"
+                      >
+                        Evrimleş
+                      </button>
                     )}
                   </div>
                 )
