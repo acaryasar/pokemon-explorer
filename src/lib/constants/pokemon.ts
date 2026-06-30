@@ -802,6 +802,16 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png',
     baseStats: { hp: 52, attack: 90, defense: 55, speed: 60 },
     rarity: 'epic',
+    evolvesTo: 865,
+    evolutionLevel: 35,
+  },
+  {
+    id: 865,
+    name: 'Sirfetchd',
+    types: ['Fighting', 'Flying'],
+    sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/865.png',
+    baseStats: { hp: 62, attack: 135, defense: 95, speed: 65 },
+    rarity: 'legendary',
   },
   {
     id: 84,
@@ -1190,6 +1200,16 @@ export const POKEMON_DATA: Pokemon[] = [
     sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/122.png',
     baseStats: { hp: 40, attack: 45, defense: 65, speed: 90 },
     rarity: 'epic',
+    evolvesTo: 866,
+    evolutionLevel: 42,
+  },
+  {
+    id: 866,
+    name: 'Mr. Rime',
+    types: ['Ice', 'Psychic'],
+    sprite: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/866.png',
+    baseStats: { hp: 75, attack: 65, defense: 70, speed: 95 },
+    rarity: 'legendary',
   },
   // Legendary Pokemon
   {

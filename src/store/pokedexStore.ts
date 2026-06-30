@@ -72,8 +72,8 @@ export const usePokedexStore = create<PokedexState>((set, get) => ({
 
     // Update local state - pokemon stays in same position
     set((state) => ({
-      pokemon: state.pokemon.map(p => 
-        p.id === caughtPokemonId 
+      pokemon: state.pokemon.map(p =>
+        p.id === caughtPokemonId
           ? { ...p, pokemon_id: pokemonData.evolvesTo! }
           : p
       )
