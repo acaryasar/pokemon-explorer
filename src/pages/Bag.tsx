@@ -8,7 +8,7 @@ import { getPokemonById, POKEMON_DATA } from '../lib/constants/pokemon'
 function Bag() {
   const { pokeballs, loadInventory } = useInventoryStore()
   const { pokemon, loadPokemon, evolvePokemon } = usePokedexStore()
-  const { username } = useAuthStore()
+  const { username, profile } = useAuthStore()
   const [evolutionError, setEvolutionError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -83,6 +83,7 @@ function Bag() {
                 const pokemonData = getPokemonById(caughtPokemon.pokemon_id)
                 const isLegendaryBonus = caughtPokemon.id?.toString().startsWith('legendary_')
                 const canEvolve = pokemonData?.evolvesTo && !isLegendaryBonus
+                const hasEnoughPoints = (profile?.pokemon_points ?? 0) >= 50
                 return (
                   <div key={caughtPokemon.id} className={`bg-gray-700 rounded-lg p-4 text-center ${isLegendaryBonus ? 'border-2 border-yellow-500' : ''}`}>
                     <img
@@ -98,9 +99,14 @@ function Bag() {
                     {canEvolve && (
                       <button
                         onClick={() => handleEvolve(caughtPokemon.id)}
-                        className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-colors"
+                        disabled={!hasEnoughPoints}
+                        className={`mt-2 px-3 py-1 text-white text-sm rounded transition-colors ${
+                          hasEnoughPoints
+                            ? 'bg-purple-600 hover:bg-purple-700'
+                            : 'bg-gray-600 cursor-not-allowed opacity-50'
+                        }`}
                       >
-                        Evrimleş
+                        {hasEnoughPoints ? 'Evrimleş' : '50 Puan Gerekli'}
                       </button>
                     )}
                   </div>
