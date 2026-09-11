@@ -1,26 +1,16 @@
-import Map from '../components/game/Map'
+import GameScene from '../components/game/GameScene'
 import PokemonEncounter from '../components/game/PokemonEncounter'
 import MobileControls from '../components/game/MobileControls'
 import Header from '../components/layout/Header'
-import { useMovement } from '../hooks/useMovement'
 import { useAudio } from '../hooks/useAudio'
 import { useAuthStore } from '../store/authStore'
 import { usePokedexStore } from '../store/pokedexStore'
-import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 
 function Game() {
-  useMovement()
   const { user } = useAuthStore()
-  const navigate = useNavigate()
   const { toggle, isPlaying } = useAudio('/assets/pokemon-theme.mp3')
   const { loadPokemon } = usePokedexStore()
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/')
-    }
-  }, [user, navigate])
 
   useEffect(() => {
     if (user) {
@@ -28,31 +18,28 @@ function Game() {
     }
   }, [user, loadPokemon])
 
-  const handleMusicToggle = () => {
-    toggle()
-  }
-
   if (!user) {
     return null
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="h-screen flex flex-col bg-gray-900">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold text-white">Oyun</h1>
-          <button
-            onClick={handleMusicToggle}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-          >
-            {isPlaying ? '🔊' : '🔇'}
-          </button>
+      <div className="relative flex-1">
+        <GameScene />
+
+        <button
+          onClick={toggle}
+          className="absolute top-4 right-4 z-30 px-4 py-2 bg-blue-600/90 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-colors"
+        >
+          {isPlaying ? '🔊' : '🔇'}
+        </button>
+
+        <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-30 text-white text-sm bg-black/50 px-4 py-2 rounded-lg pointer-events-none">
+          Hareket etmek için ok tuşlarını veya WASD kullanın
         </div>
-        <div className="flex justify-center relative">
-          <Map />
-          <MobileControls />
-        </div>
+
+        <MobileControls />
         <PokemonEncounter />
       </div>
     </div>

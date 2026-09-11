@@ -1,25 +1,39 @@
 import { useState, useRef, useEffect } from 'react'
 import { useGameStore } from '../../store/gameStore'
 
+const MAX_DISTANCE = 50
+
 function MobileControls() {
-  const { movePlayer, encounterPokemon } = useGameStore()
+  const setJoystickVector = useGameStore((s) => s.setJoystickVector)
   const [isDragging, setIsDragging] = useState(false)
   const [isMovingJoystick, setIsMovingJoystick] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 }) // Position relative to container (centered initially)
+  const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 })
+  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 })
   const joystickRef = useRef<HTMLDivElement>(null)
-  const knobRef = useRef<HTMLDivElement>(null)
-  const moveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const updateVector = (deltaX: number, deltaY: number) => {
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+
+    let x = deltaX
+    let y = deltaY
+    if (distance > MAX_DISTANCE) {
+      x = (deltaX / distance) * MAX_DISTANCE
+      y = (deltaY / distance) * MAX_DISTANCE
+    }
+
+    setKnobPosition({ x, y })
+    setJoystickVector({ x: x / MAX_DISTANCE, z: y / MAX_DISTANCE })
+  }
 
   const handleStart = (clientX: number, clientY: number) => {
     if (!joystickRef.current) return
     const rect = joystickRef.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
-    
+
     setIsDragging(true)
-    updatePosition(clientX - centerX, clientY - centerY)
+    updateVector(clientX - centerX, clientY - centerY)
   }
 
   const handleMove = (clientX: number, clientY: number) => {
@@ -27,67 +41,14 @@ function MobileControls() {
     const rect = joystickRef.current.getBoundingClientRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
-    
-    updatePosition(clientX - centerX, clientY - centerY)
-  }
 
-  const updatePosition = (deltaX: number, deltaY: number) => {
-    const maxDistance = 50
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    
-    let x = deltaX
-    let y = deltaY
-    
-    if (distance > maxDistance) {
-      x = (deltaX / distance) * maxDistance
-      y = (deltaY / distance) * maxDistance
-    }
-    
-    setPosition({ x, y })
-    
-    // Determine direction based on position
-    const threshold = 15
-    let direction: 'up' | 'down' | 'left' | 'right' | null = null
-    
-    if (Math.abs(x) > Math.abs(y)) {
-      if (x > threshold) direction = 'right'
-      else if (x < -threshold) direction = 'left'
-    } else {
-      if (y > threshold) direction = 'down'
-      else if (y < -threshold) direction = 'up'
-    }
-    
-    if (direction) {
-      // Clear existing interval
-      if (moveIntervalRef.current) {
-        clearInterval(moveIntervalRef.current)
-      }
-      
-      // Move immediately
-      movePlayer(direction)
-      encounterPokemon()
-      
-      // Set up continuous movement
-      moveIntervalRef.current = setInterval(() => {
-        movePlayer(direction)
-        encounterPokemon()
-      }, 100000)
-    } else {
-      // Clear interval if no direction
-      if (moveIntervalRef.current) {
-        clearInterval(moveIntervalRef.current)
-        moveIntervalRef.current = null
-      }
-    }
+    updateVector(clientX - centerX, clientY - centerY)
   }
 
   const handleEnd = () => {
     setIsDragging(false)
-    setPosition({ x: 0, y: 0 })
-    if (moveIntervalRef.current) {
-      clearInterval(moveIntervalRef.current)
-      moveIntervalRef.current = null
-    }
+    setKnobPosition({ x: 0, y: 0 })
+    setJoystickVector({ x: 0, z: 0 })
   }
 
   const handleJoystickDragStart = (e: React.TouchEvent | React.MouseEvent) => {
@@ -99,16 +60,14 @@ function MobileControls() {
   const handleJoystickDragMove = (e: React.TouchEvent | React.MouseEvent) => {
     if (!isMovingJoystick || !containerRef.current) return
     e.preventDefault()
-    
+
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-    
+
     const containerRect = containerRef.current.getBoundingClientRect()
-    
-    // Calculate new position relative to container
-    const newX = clientX - containerRect.left - 64 // 64 is half of joystick width
-    const newY = clientY - containerRect.top - 64 // 64 is half of joystick height
-    
+    const newX = clientX - containerRect.left - 64
+    const newY = clientY - containerRect.top - 64
+
     setJoystickPosition({ x: newX, y: newY })
   }
 
@@ -164,19 +123,15 @@ function MobileControls() {
     }
   }
 
-  // Clean up interval on unmount
+  // Stop any residual movement if the widget unmounts mid-drag
   useEffect(() => {
-    return () => {
-      if (moveIntervalRef.current) {
-        clearInterval(moveIntervalRef.current)
-      }
-    }
-  }, [])
+    return () => setJoystickVector({ x: 0, z: 0 })
+  }, [setJoystickVector])
 
   return (
-    <div ref={containerRef} className="md:hidden relative z-50 w-full h-full">
+    <div ref={containerRef} className="md:hidden fixed inset-0 pointer-events-none z-40">
       <div
-        className="absolute"
+        className="absolute pointer-events-auto"
         style={{
           left: `calc(50% + ${joystickPosition.x}px - 64px)`,
           top: `calc(100% + ${joystickPosition.y}px - 150px)`,
@@ -193,7 +148,6 @@ function MobileControls() {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {/* Drag handle */}
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-gray-600 rounded-full cursor-move z-10"
             onMouseDown={handleJoystickDragStart}
@@ -201,12 +155,11 @@ function MobileControls() {
           >
             <div className="w-full h-full flex items-center justify-center text-white text-xs">⋮⋮</div>
           </div>
-          
+
           <div
-            ref={knobRef}
             className="absolute w-14 h-14 bg-blue-600 rounded-full shadow-lg transition-transform duration-75"
             style={{
-              transform: `translate(${position.x}px, ${position.y}px)`,
+              transform: `translate(${knobPosition.x}px, ${knobPosition.y}px)`,
               left: 'calc(50% - 28px)',
               top: 'calc(50% - 28px)',
             }}

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Direction, Position } from '../lib/types/game'
+import type { MoveVector } from '../lib/types/game'
 import type { Pokemon } from '../lib/types/pokemon'
 import { getRandomRarity } from '../lib/constants/rarity'
 import { POKEMON_DATA } from '../lib/constants/pokemon'
@@ -8,11 +8,12 @@ import { usePokedexStore } from './pokedexStore'
 import { useInventoryStore } from './inventoryStore'
 
 interface GameState {
-  playerPosition: Position
+  /** Continuous movement input from the on-screen joystick, read by the 3D scene each frame. */
+  joystickVector: MoveVector
   currentPokemon: Pokemon | null
   isEncounter: boolean
   isCatching: boolean
-  movePlayer: (direction: Direction) => void
+  setJoystickVector: (vector: MoveVector) => void
   encounterPokemon: () => void
   catchPokemon: () => Promise<void>
   runAway: () => void
@@ -20,46 +21,18 @@ interface GameState {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
-  playerPosition: { x: 0, y: 0 },
+  joystickVector: { x: 0, z: 0 },
   currentPokemon: null,
   isEncounter: false,
   isCatching: false,
 
-  movePlayer: (direction: Direction) => {
-    set((state) => {
-      const newPosition = { ...state.playerPosition }
-
-      switch (direction) {
-        case 'up':
-          newPosition.y = Math.max(0, newPosition.y - 1)
-          break
-        case 'down':
-          newPosition.y = Math.min(14, newPosition.y + 1)
-          break
-        case 'left':
-          newPosition.x = Math.max(0, newPosition.x - 1)
-          break
-        case 'right':
-          newPosition.x = Math.min(14, newPosition.x + 1)
-          break
-      }
-
-      // Update online player position in database
-      const user = useAuthStore.getState().user
-      const username = useAuthStore.getState().username
-      if (user) {
-        import('../lib/supabase/realtime').then(({ updateOnlinePlayer }) => {
-          updateOnlinePlayer(user.id, username || 'Anonymous', newPosition.x, newPosition.y)
-        })
-      }
-
-      return { playerPosition: newPosition }
-    })
-  },
+  setJoystickVector: (vector: MoveVector) => set({ joystickVector: vector }),
 
   encounterPokemon: () => {
-    // 20% chance of encounter
-    if (Math.random() < 0.2) {
+    if (get().isEncounter) return
+
+    // 25% chance of encounter when triggered
+    if (Math.random() < 0.25) {
       const username = useAuthStore.getState().username.toLowerCase()
       const isKuzey = username === 'kuzey'
 
@@ -82,31 +55,31 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ isCatching: true })
     const { currentPokemon } = get()
     const user = useAuthStore.getState().user
-    
+
     if (currentPokemon && user) {
       // Save to Supabase
       const { catchPokemon: savePokemon } = await import('../lib/supabase/pokemon')
       const { addXP } = await import('../lib/supabase/profile')
       const { addPokeballs } = await import('../lib/supabase/profile')
-      
+
       const { data: caughtPokemon } = await savePokemon(user.id, currentPokemon.id, currentPokemon.rarity)
-      
+
       if (caughtPokemon) {
         // Add XP for catching
         await addXP(user.id, 10)
-        
+
         // Add pokeballs as reward
         await addPokeballs(user.id, 2)
-        
+
         // Update local stores
         const pokedexStore = usePokedexStore.getState()
         pokedexStore.addPokemon(caughtPokemon)
-        
+
         const inventoryStore = useInventoryStore.getState()
         inventoryStore.addPokeballs(2)
       }
     }
-    
+
     setTimeout(() => {
       set({ currentPokemon: null, isEncounter: false, isCatching: false })
     }, 2000)
