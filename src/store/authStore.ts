@@ -93,7 +93,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 }))
 
 // Initialize auth state listener
-onAuthStateChange((_event, session) => {
+onAuthStateChange((event, session) => {
   const user = session?.user || null
-  useAuthStore.setState({ user, loading: false })
+  if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+    // Clear profile when signed out or token refreshed
+    useAuthStore.setState({ user, profile: null, loading: false, username: '' })
+  } else {
+    useAuthStore.setState({ user, loading: false })
+  }
 })
