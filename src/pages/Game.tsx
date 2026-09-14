@@ -23,7 +23,7 @@ function Game() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900">
+    <div className="h-dvh flex flex-col bg-gray-900 overflow-hidden">
       <Header />
       <div className="relative flex-1">
         <GameScene />

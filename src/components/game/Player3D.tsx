@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Billboard, Text } from '@react-three/drei'
 import * as THREE from 'three'
@@ -7,6 +7,8 @@ import { useGameStore } from '../../store/gameStore'
 import { useAuthStore } from '../../store/authStore'
 import { updateOnlinePlayer } from '../../lib/supabase/realtime'
 import { OBSTACLES, PLAYER_RADIUS, PLAYER_SPEED, WORLD_HALF_SIZE } from '../../lib/constants/world'
+import { getPlayerColor } from '../../lib/constants/playerColors'
+import CharacterModel, { type WalkState } from './CharacterModel'
 
 const SYNC_INTERVAL = 0.15 // seconds between multiplayer position updates
 const ENCOUNTER_DISTANCE = 3 // world units walked before rolling a new encounter check
@@ -42,7 +44,7 @@ interface Player3DProps {
 
 function Player3D({ positionRef }: Player3DProps) {
   const groupRef = useRef<THREE.Group>(null)
-  const bodyRef = useRef<THREE.Group>(null)
+  const walkStateRef = useRef<WalkState>({ isMoving: false, walkTime: 0 })
   const getInputVector = useKeyboardControls()
   const { camera } = useThree()
 
@@ -52,7 +54,8 @@ function Player3D({ positionRef }: Player3DProps) {
   const encounterDistanceRef = useRef(0)
   const cameraInitializedRef = useRef(false)
 
-  const { username, profile } = useAuthStore()
+  const { user, username, profile } = useAuthStore()
+  const color = useMemo(() => getPlayerColor(user?.id ?? ''), [user?.id])
 
   useFrame((_state, rawDelta) => {
     const delta = Math.min(rawDelta, 0.1)
@@ -99,9 +102,8 @@ function Player3D({ positionRef }: Player3DProps) {
       groupRef.current.position.set(positionRef.current.x, 0, positionRef.current.z)
       groupRef.current.rotation.y = rotationRef.current
     }
-    if (bodyRef.current) {
-      bodyRef.current.position.y = isMoving ? Math.abs(Math.sin(walkTimeRef.current)) * 0.12 : 0
-    }
+    walkStateRef.current.isMoving = isMoving
+    walkStateRef.current.walkTime = walkTimeRef.current
 
     // Throttled multiplayer position sync
     syncTimerRef.current += delta
@@ -137,21 +139,8 @@ function Player3D({ positionRef }: Player3DProps) {
 
   return (
     <group ref={groupRef}>
-      <group ref={bodyRef}>
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <capsuleGeometry args={[0.3, 0.6, 4, 8]} />
-          <meshStandardMaterial color="#e63946" flatShading />
-        </mesh>
-        <mesh position={[0, 1.55, 0]} castShadow>
-          <sphereGeometry args={[0.28, 12, 10]} />
-          <meshStandardMaterial color="#ffd9b3" flatShading />
-        </mesh>
-        <mesh position={[0, 1.72, 0]} castShadow>
-          <coneGeometry args={[0.3, 0.22, 12]} />
-          <meshStandardMaterial color="#1d3557" flatShading />
-        </mesh>
-      </group>
-      <Billboard position={[0, 2.2, 0]}>
+      <CharacterModel color={color} walkStateRef={walkStateRef} />
+      <Billboard position={[0, 1.75, 0]}>
         <Text fontSize={0.25} color="#ffffff" anchorX="center" anchorY="middle" outlineWidth={0.02} outlineColor="#000000">
           {displayName}
         </Text>

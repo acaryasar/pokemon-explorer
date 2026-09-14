@@ -1,16 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
 import { useGameStore } from '../../store/gameStore'
+import { useIsTouchDevice } from '../../hooks/useIsTouchDevice'
 
 const MAX_DISTANCE = 50
 
 function MobileControls() {
   const setJoystickVector = useGameStore((s) => s.setJoystickVector)
+  const isTouchDevice = useIsTouchDevice()
   const [isDragging, setIsDragging] = useState(false)
-  const [isMovingJoystick, setIsMovingJoystick] = useState(false)
   const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 })
-  const [joystickPosition, setJoystickPosition] = useState({ x: 0, y: 0 })
   const joystickRef = useRef<HTMLDivElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   const updateVector = (deltaX: number, deltaY: number) => {
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
@@ -51,76 +50,26 @@ function MobileControls() {
     setJoystickVector({ x: 0, z: 0 })
   }
 
-  const handleJoystickDragStart = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsMovingJoystick(true)
-  }
-
-  const handleJoystickDragMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (!isMovingJoystick || !containerRef.current) return
-    e.preventDefault()
-
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY
-
-    const containerRect = containerRef.current.getBoundingClientRect()
-    const newX = clientX - containerRect.left - 64
-    const newY = clientY - containerRect.top - 64
-
-    setJoystickPosition({ x: newX, y: newY })
-  }
-
-  const handleJoystickDragEnd = () => {
-    setIsMovingJoystick(false)
-  }
-
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isMovingJoystick) return
     e.preventDefault()
     const touch = e.touches[0]
     handleStart(touch.clientX, touch.clientY)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (isMovingJoystick) {
-      handleJoystickDragMove(e)
-    } else {
-      e.preventDefault()
-      const touch = e.touches[0]
-      handleMove(touch.clientX, touch.clientY)
-    }
-  }
-
-  const handleTouchEnd = () => {
-    if (isMovingJoystick) {
-      handleJoystickDragEnd()
-    } else {
-      handleEnd()
-    }
+    e.preventDefault()
+    const touch = e.touches[0]
+    handleMove(touch.clientX, touch.clientY)
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (isMovingJoystick) return
     e.preventDefault()
     handleStart(e.clientX, e.clientY)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isMovingJoystick) {
-      handleJoystickDragMove(e)
-    } else {
-      e.preventDefault()
-      handleMove(e.clientX, e.clientY)
-    }
-  }
-
-  const handleMouseUp = () => {
-    if (isMovingJoystick) {
-      handleJoystickDragEnd()
-    } else {
-      handleEnd()
-    }
+    e.preventDefault()
+    handleMove(e.clientX, e.clientY)
   }
 
   // Stop any residual movement if the widget unmounts mid-drag
@@ -128,47 +77,56 @@ function MobileControls() {
     return () => setJoystickVector({ x: 0, z: 0 })
   }, [setJoystickVector])
 
-  return (
-    <div ref={containerRef} className="md:hidden fixed inset-0 pointer-events-none z-40">
-      <div
-        className="absolute pointer-events-auto"
-        style={{
-          left: `calc(50% + ${joystickPosition.x}px - 64px)`,
-          top: `calc(100% + ${joystickPosition.y}px - 150px)`,
-        }}
-      >
-        <div
-          ref={joystickRef}
-          className="relative w-32 h-32 bg-gray-800/80 rounded-full border-4 border-gray-700 touch-none select-none cursor-move"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-gray-600 rounded-full cursor-move z-10"
-            onMouseDown={handleJoystickDragStart}
-            onTouchStart={handleJoystickDragStart}
-          >
-            <div className="w-full h-full flex items-center justify-center text-white text-xs">⋮⋮</div>
-          </div>
+  if (!isTouchDevice) return null
 
-          <div
-            className="absolute w-14 h-14 bg-blue-600 rounded-full shadow-lg transition-transform duration-75"
-            style={{
-              transform: `translate(${knobPosition.x}px, ${knobPosition.y}px)`,
-              left: 'calc(50% - 28px)',
-              top: 'calc(50% - 28px)',
-            }}
-          >
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
-            </div>
-          </div>
-        </div>
+  return (
+    <div
+      className="fixed z-40"
+      style={{
+        left: 'max(1.25rem, env(safe-area-inset-left))',
+        bottom: 'max(1.25rem, env(safe-area-inset-bottom))',
+      }}
+    >
+      <div
+        ref={joystickRef}
+        className="relative rounded-full touch-none select-none"
+        style={{
+          width: 'clamp(88px, 24vmin, 136px)',
+          height: 'clamp(88px, 24vmin, 136px)',
+          background: 'radial-gradient(circle at 35% 30%, rgba(55,65,81,0.85), rgba(17,24,39,0.85))',
+          border: '2px solid rgba(255,255,255,0.15)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.4), inset 0 0 12px rgba(0,0,0,0.5)',
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleEnd}
+        onMouseLeave={handleEnd}
+      >
+        {/* Directional hints */}
+        <span className="absolute top-1.5 left-1/2 -translate-x-1/2 text-white/40 text-xs leading-none">▲</span>
+        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-white/40 text-xs leading-none">▼</span>
+        <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-white/40 text-xs leading-none">◀</span>
+        <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-white/40 text-xs leading-none">▶</span>
+
+        <div
+          className="absolute rounded-full transition-transform duration-75"
+          style={{
+            width: 'clamp(40px, 11vmin, 60px)',
+            height: 'clamp(40px, 11vmin, 60px)',
+            left: '50%',
+            top: '50%',
+            marginLeft: 'clamp(-30px, -5.5vmin, -20px)',
+            marginTop: 'clamp(-30px, -5.5vmin, -20px)',
+            transform: `translate(${knobPosition.x}px, ${knobPosition.y}px)`,
+            background: 'radial-gradient(circle at 35% 30%, #60a5fa, #2563eb)',
+            boxShadow: isDragging
+              ? '0 0 0 6px rgba(96,165,250,0.25), 0 2px 8px rgba(0,0,0,0.5)'
+              : '0 2px 8px rgba(0,0,0,0.5)',
+          }}
+        />
       </div>
     </div>
   )

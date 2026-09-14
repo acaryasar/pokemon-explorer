@@ -18,6 +18,9 @@ CREATE TABLE profiles (
 );
 
 -- Pokemon caught table
+-- Note: intentionally no UNIQUE(user_id, pokemon_id) constraint -- a trainer can
+-- catch (and own) more than one of the same species, and evolving a Pokemon
+-- into a species the trainer already owns must not violate a uniqueness rule.
 CREATE TABLE pokemon_caught (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -25,8 +28,7 @@ CREATE TABLE pokemon_caught (
   nickname TEXT,
   level INTEGER DEFAULT 1,
   rarity TEXT NOT NULL,
-  caught_at TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(user_id, pokemon_id)
+  caught_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Player positions table

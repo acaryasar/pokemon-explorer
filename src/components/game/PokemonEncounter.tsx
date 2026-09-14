@@ -25,13 +25,17 @@ function PokemonEncounter() {
         <CatchAnimation />
       ) : (
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">A wild {currentPokemon.name} appeared!</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-900">A wild {currentPokemon.name} appeared!</h2>
           
-          <div className="mb-4">
+          <div className="mb-4 relative flex items-center justify-center">
+            <div
+              className="absolute w-40 h-40 md:w-52 md:h-52 rounded-full blur-2xl opacity-40"
+              style={{ backgroundColor: RARITY_COLORS[currentPokemon.rarity] }}
+            />
             <img
               src={currentPokemon.sprite}
               alt={currentPokemon.name}
-              className="w-32 h-32 mx-auto"
+              className="relative w-44 h-44 md:w-56 md:h-56 mx-auto animate-float drop-shadow-2xl"
             />
           </div>
 
@@ -44,7 +48,7 @@ function PokemonEncounter() {
             </div>
           </div>
 
-          <div className="mb-4 text-left">
+          <div className="mb-4 text-left text-gray-800">
             <div className="mb-2">
               <span className="font-semibold">Types: </span>
               {currentPokemon.types.join(', ')}
@@ -68,7 +72,7 @@ function PokemonEncounter() {
           </div>
 
           <div className="mb-4">
-            <div className="flex justify-between text-sm mb-1">
+            <div className="flex justify-between text-sm mb-1 text-gray-700">
               <span>Pokeballs</span>
               <span>{pokeballs}</span>
             </div>

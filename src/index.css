@@ -19,14 +19,20 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 #root {
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  min-height: 100dvh;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 2.4s ease-in-out infinite;
 }

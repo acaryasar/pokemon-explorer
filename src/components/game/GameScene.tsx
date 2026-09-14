@@ -4,11 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import World from './World'
 import Player3D from './Player3D'
 import OtherPlayer3D from './OtherPlayer3D'
+import WildPokemon3D from './WildPokemon3D'
 import { subscribeToOnlinePlayers, type OnlinePlayer } from '../../lib/supabase/realtime'
 import { useAuthStore } from '../../store/authStore'
+import { useGameStore } from '../../store/gameStore'
 
 function GameScene() {
   const { user } = useAuthStore()
+  const { currentPokemon, isEncounter } = useGameStore()
   const [onlinePlayers, setOnlinePlayers] = useState<OnlinePlayer[]>([])
   const playerPositionRef = useRef({ x: 0, z: 0 })
 
@@ -41,6 +44,9 @@ function GameScene() {
       {others.map((p) => (
         <OtherPlayer3D key={p.id} player={p} />
       ))}
+      {isEncounter && currentPokemon && (
+        <WildPokemon3D pokemon={currentPokemon} positionRef={playerPositionRef} />
+      )}
     </Canvas>
   )
 }
