@@ -1,0 +1,35 @@
+# Apache / cPanel hosting için
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # http → https ve acaryasar.com → www.acaryasar.com
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} ^acaryasar\.com$ [NC]
+  RewriteRule ^(.*)$ https://www.acaryasar.com/$1 [R=301,L]
+
+  # Küçük/büyük harf farkıyla yazılan ürün adreslerini doğru sayfaya yönlendir
+  # (örn. /iyisinif, /IYISINIF → /iyiSinif/)
+  RewriteCond %{REQUEST_URI} !^/iyiSinif
+  RewriteRule ^iyisinif/?$ /iyiSinif/ [NC,R=301,L]
+  RewriteCond %{REQUEST_URI} !^/iyiSite
+  RewriteRule ^iyisite/?$ /iyiSite/ [NC,R=301,L]
+  RewriteCond %{REQUEST_URI} !^/iyiAvukat
+  RewriteRule ^iyiavukat/?$ /iyiAvukat/ [NC,R=301,L]
+  RewriteCond %{REQUEST_URI} !^/iyiCrm
+  RewriteRule ^iyicrm/?$ /iyiCrm/ [NC,R=301,L]
+  RewriteCond %{REQUEST_URI} !^/iyiBerber
+  RewriteRule ^iyiberber/?$ /iyiBerber/ [NC,R=301,L]
+  RewriteCond %{REQUEST_URI} !^/iyiDernek
+  RewriteRule ^iyidernek/?$ /iyiDernek/ [NC,R=301,L]
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType text/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>
