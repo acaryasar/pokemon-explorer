@@ -41,7 +41,20 @@ build.mjs           statik site üretici → dist/
 serve.mjs           yerel önizleme sunucusu
 ```
 
-## Yayına alma
+## Natro'ya yükleme
+
+1. `npm run package` → `acaryasar-natro.zip` oluşur (içinde yalnızca site dosyaları vardır).
+2. Natro panelinde **Dosya Yöneticisi**'ni açın ve kök klasöre girin: cPanel'de `public_html`, Plesk'te `httpdocs`.
+3. Eski siteyi yedekleyip (sıkıştırıp indirerek) klasörü boşaltın.
+4. `acaryasar-natro.zip` dosyasını yükleyin, **Çıkart (Extract)** deyin ve zip dosyasını silin.
+   `index.html` doğrudan `public_html` içinde olmalı, alt klasörde değil.
+5. **SSL:** Panelden ücretsiz SSL'i aktif edin, ardından `.htaccess` içindeki https satırlarının başındaki `#` işaretlerini kaldırın.
+   (Dosya Yöneticisi'nde gizli dosyaları göster seçeneğini açmanız gerekebilir.)
+6. **Demo alt alan adları:** Panelde her demo için (`iyisinif`, `iyisite`, …) alt alan adı oluşturup ilgili demo uygulamasını oraya kurun ya da DNS'te demo sunucusuna `A`/`CNAME` kaydı ekleyin.
+
+Windows (Plesk) paketlerinde `.htaccess` dikkate alınmaz, site yine sorunsuz çalışır; https yönlendirmesini Plesk'te **SSL/TLS → HTTP'den HTTPS'e kalıcı 301 yönlendirme** seçeneğiyle açın.
+
+## Yayına alma (diğer servisler)
 
 `dist/` klasörünün **içeriğini** hostingin kök dizinine (`public_html` vb.) yükleyin.
 

@@ -1,4 +1,4 @@
-# Apache / cPanel hosting için
+# Natro Linux (cPanel / Apache / LiteSpeed) hosting için
 Options -Indexes
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
@@ -7,9 +7,11 @@ ErrorDocument 404 /404.html
   RewriteEngine On
 
   # http → https ve acaryasar.com → www.acaryasar.com
-  RewriteCond %{HTTPS} off [OR]
-  RewriteCond %{HTTP_HOST} ^acaryasar\.com$ [NC]
-  RewriteRule ^(.*)$ https://www.acaryasar.com/$1 [R=301,L]
+  # Natro panelinden SSL sertifikası (ücretsiz Let's Encrypt) aktif edildikten sonra
+  # aşağıdaki 3 satırın başındaki # işaretini kaldırın. SSL yokken açarsanız site açılmaz.
+  # RewriteCond %{HTTPS} off [OR]
+  # RewriteCond %{HTTP_HOST} ^acaryasar\.com$ [NC]
+  # RewriteRule ^(.*)$ https://www.acaryasar.com/$1 [R=301,L]
 
   # Küçük/büyük harf farkıyla yazılan ürün adreslerini doğru sayfaya yönlendir
   # (örn. /iyisinif, /IYISINIF → /iyiSinif/)
